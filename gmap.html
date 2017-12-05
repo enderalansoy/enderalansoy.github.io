@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Google Maps</title>
+    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAAPDUET0Qt7p2VcSk6JNU1sBSM5jMcmVqUpI7aqV44cW1cEECiThQYkcZUPRJn9vy_TWxWvuLoOfSFBw" type="text/javascript"></script>
+    <script src="epoly.js" type="text/javascript"></script>
+  </head>
+  <body>
+    <input type="hidden" name="latitude" id="latitude">
+    <input type="hidden" name="longitude" id="longitude">
+    <div id="output"></div>
+
+    <script type="text/javascript">
+
+    function calculate(latitude, longitude) {
+      const directions = new GDirections();
+      const point = new GLatLng(latitude, longitude);
+
+      directions.loadFromWaypoints([point, point], { getPolyline: true });
+
+      GEvent.addListener(directions, 'load', () => {
+        const newPoint = directions.getPolyline().getVertex(0);
+        const data = `{"lat": ${newPoint.lat()}, "lng": ${newPoint.lng()}}`;
+        console.log(data);
+        document.getElementById('output').innerHTML = data;
+      });
+    }
+
+    function get(name) {
+      if (name=(new RegExp('[?&]'+encodeURIComponent(name)+'=([^&]*)')).exec(location.search))
+      return decodeURIComponent(name[1]);
+    }
+
+    document.getElementById("latitude").value = get('lat');
+    document.getElementById("longitude").value = get('lng');
+
+    calculate(document.getElementById('latitude').value,document.getElementById('longitude').value);
+
+    </script>
+
+  </body>
+</html>
